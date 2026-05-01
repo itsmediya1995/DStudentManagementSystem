@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="dashboard-shell">
+        <header class="topbar">
+          <div>
+            <h1>Student Management</h1>
+            <p class="subtitle">Manage student records and grades</p>
+          </div>
+          <button id="open-form-btn" class="primary">+ Add Student</button>
+        </header>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <p class="stat-label">Total Students</p>
+            <p id="total-students" class="stat-value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">Average Marks</p>
+            <p id="avg-marks" class="stat-value">0%</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">Top Grade</p>
+            <p id="top-grade" class="stat-value">-</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">Departments</p>
+            <p id="department-count" class="stat-value">0</p>
+          </article>
+        </section>
+
+        <section class="panel">
+          <h2>Department Statistics</h2>
+          <div id="department-bars" class="department-bars"></div>
+          <div id="department-legend" class="department-legend"></div>
+        </section>
+
+        <section id="form-panel" class="panel hidden">
+          <h2 id="form-title">Add Student</h2>
+          <form id="student-form" class="form-grid">
+            <input type="hidden" id="student-id" />
+
+            <label>
+              Name
+              <input id="name" type="text" placeholder="Enter full name" required />
+            </label>
+
+            <label>
+              Roll Number
+              <input id="roll-number" type="text" placeholder="e.g. CSE101" required />
+            </label>
+
+            <label>
+              Marks
+              <input id="marks" type="number" min="0" max="100" step="0.01" required />
+            </label>
+
+            <label>
+              Department
+              <input id="department" type="text" placeholder="e.g. Computer Science" required />
+            </label>
+
+            <div class="actions">
+              <button id="submit-btn" class="primary" type="submit">Add Student</button>
+              <button id="cancel-btn" type="button" class="secondary hidden">Cancel Edit</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="records-header">
+            <h2>Student Records</h2>
+            <div class="toolbar">
+              <input id="search" type="search" placeholder="Search by name or roll number" />
+              <select id="department-filter">
+                <option value="">All Departments</option>
+              </select>
+            </div>
+          </div>
+
+          <p id="message" class="message"></p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Roll No.</th>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Marks</th>
+                  <th>Grade</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="students-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
