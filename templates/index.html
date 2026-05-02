@@ -15,7 +15,10 @@
             <h1>Student Management</h1>
             <p class="subtitle">Manage student records and grades</p>
           </div>
-          <button id="open-form-btn" class="primary">+ Add Student</button>
+          <div style="display: flex; gap: 10px;">
+            <button id="open-form-btn" class="primary">+ Add Student</button>
+            <button id="show-details-btn" class="primary">👁️ Student Details</button>
+          </div>
         </header>
 
         <section class="stats-grid">
@@ -102,7 +105,38 @@
               </thead>
               <tbody id="students-table-body"></tbody>
             </table>
+            <div style="text-align: center; padding: 1rem;">
+              <button id="show-all-students-btn" class="primary">Show All Students →</button>
+            </div>
           </div>
+        </section>
+      </section>
+
+      <section id="details-view" class="dashboard-shell hidden">
+        <header class="topbar">
+          <div>
+            <h1>📋 All Student Details</h1>
+            <p class="subtitle">Complete student information and records</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button id="back-to-dashboard-btn" class="primary">← Back to Dashboard</button>
+          </div>
+        </header>
+
+        <section class="panel">
+          <div class="records-header">
+            <h2>Complete Student Records</h2>
+            <div class="toolbar">
+              <input id="details-search" type="search" placeholder="Search student..." />
+              <select id="details-department-filter">
+                <option value="">All Departments</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="details-message" class="message"></div>
+
+          <div id="student-details-grid" class="student-details-grid"></div>
         </section>
       </section>
     </main>

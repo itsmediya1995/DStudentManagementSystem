@@ -19,6 +19,15 @@ const topGradeEl = document.getElementById("top-grade");
 const departmentCountEl = document.getElementById("department-count");
 const departmentBarsEl = document.getElementById("department-bars");
 const departmentLegendEl = document.getElementById("department-legend");
+const showDetailsBtn = document.getElementById("show-details-btn");
+const detailsView = document.getElementById("details-view");
+const dashboardShell = document.querySelector(".dashboard-shell");
+const studentDetailsGrid = document.getElementById("student-details-grid");
+const detailsMessage = document.getElementById("details-message");
+const detailsSearch = document.getElementById("details-search");
+const detailsDepartmentFilter = document.getElementById("details-department-filter");
+const backToDashboardBtn = document.getElementById("back-to-dashboard-btn");
+const showAllStudentsBtn = document.getElementById("show-all-students-btn");
 
 let currentStudents = [];
 
@@ -77,7 +86,8 @@ function escapeHtml(text) {
 }
 
 function renderRows(students) {
-  if (!students.length) {
+  const limitedStudents = students.slice(0, 5);
+  if (!limitedStudents.length) {
     tableBody.innerHTML = `
       <tr>
         <td colspan="6">No student records found.</td>
@@ -86,7 +96,7 @@ function renderRows(students) {
     return;
   }
 
-  tableBody.innerHTML = students
+  tableBody.innerHTML = limitedStudents
     .map(
       (student) => `
       <tr>
@@ -312,6 +322,108 @@ openFormBtn.addEventListener("click", () => {
   } else {
     openFormBtn.textContent = "Hide Form";
   }
+});
+
+function showDetailsMessage(text, type = "success") {
+  detailsMessage.textContent = text;
+  detailsMessage.className = `message ${type}`;
+  setTimeout(() => {
+    if (detailsMessage.textContent === text) {
+      detailsMessage.textContent = "";
+      detailsMessage.className = "message";
+    }
+  }, 2500);
+}
+
+function applyDetailsFilters(students) {
+  const query = detailsSearch.value.trim().toLowerCase();
+  const department = detailsDepartmentFilter.value;
+
+  return students.filter((student) => {
+    const matchesSearch =
+      !query ||
+      student.name.toLowerCase().includes(query) ||
+      student.roll_number.toLowerCase().includes(query);
+    const matchesDepartment = !department || student.department === department;
+    return matchesSearch && matchesDepartment;
+  });
+}
+
+function renderStudentCards(students) {
+  if (!students.length) {
+    studentDetailsGrid.innerHTML = `
+      <div style="grid-column: 1/-1; padding: 2rem; text-align: center; color: #93a7d2;">
+        No student records found.
+      </div>
+    `;
+    return;
+  }
+
+  studentDetailsGrid.innerHTML = students
+    .map(
+      (student) => `
+      <div class="student-card">
+        <div class="student-card-header">
+          <div>
+            <div class="student-name">${escapeHtml(student.name)}</div>
+            <div class="student-roll">${escapeHtml(student.roll_number)}</div>
+          </div>
+          <span class="grade ${getGrade(student.marks).toLowerCase()}">${getGrade(student.marks)}</span>
+        </div>
+        <div class="student-card-body">
+          <div class="detail-item">
+            <span class="detail-label">Department:</span>
+            <span class="detail-value department">${escapeHtml(student.department)}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Marks:</span>
+            <span class="detail-value marks">${Number(student.marks).toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+    `
+    )
+    .join("");
+}
+
+function renderDetailsView(students) {
+  const previous = detailsDepartmentFilter.value;
+  const departments = [...new Set(students.map((student) => student.department))].sort();
+  detailsDepartmentFilter.innerHTML = `<option value="">All Departments</option>${departments
+    .map((department) => `<option value="${escapeHtml(department)}">${escapeHtml(department)}</option>`)
+    .join("")}`;
+  if (departments.includes(previous)) {
+    detailsDepartmentFilter.value = previous;
+  }
+
+  renderStudentCards(applyDetailsFilters(students));
+}
+
+showDetailsBtn.addEventListener("click", () => {
+  dashboardShell.classList.toggle("hidden");
+  detailsView.classList.toggle("hidden");
+  if (!detailsView.classList.contains("hidden")) {
+    renderDetailsView(currentStudents);
+  }
+});
+
+backToDashboardBtn.addEventListener("click", () => {
+  dashboardShell.classList.toggle("hidden");
+  detailsView.classList.toggle("hidden");
+});
+
+detailsSearch.addEventListener("input", () => {
+  renderStudentCards(applyDetailsFilters(currentStudents));
+});
+
+detailsDepartmentFilter.addEventListener("change", () => {
+  renderStudentCards(applyDetailsFilters(currentStudents));
+});
+
+showAllStudentsBtn.addEventListener("click", () => {
+  dashboardShell.classList.add("hidden");
+  detailsView.classList.remove("hidden");
+  renderDetailsView(currentStudents);
 });
 
 fetchStudents().catch((err) => showMessage(err.message, "error"));

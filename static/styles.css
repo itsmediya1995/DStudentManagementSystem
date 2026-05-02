@@ -277,3 +277,77 @@ th {
 .hidden {
   display: none;
 }
+
+.student-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.student-card {
+  background: #0f1628;
+  border: 1px solid #1a2242;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.student-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+.student-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #1a2242;
+  padding-bottom: 0.8rem;
+}
+
+.student-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #22d3ee;
+}
+
+.student-roll {
+  font-size: 0.85rem;
+  color: #93a7d2;
+}
+
+.student-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-label {
+  font-size: 0.9rem;
+  color: #93a7d2;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: #dbe7ff;
+  font-weight: 600;
+}
+
+.detail-value.department {
+  color: #f59e0b;
+}
+
+.detail-value.marks {
+  color: #22d3ee;
+  font-size: 1.2rem;
+}
+

@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from flask import Flask, jsonify, render_template, request
+from mock_data import MOCK_STUDENTS
 
 
 BASE_DIR = Path(__file__).parent
@@ -33,6 +34,33 @@ def init_db() -> None:
             """
         )
         conn.commit()
+        
+        # Populate with mock data if table is empty or has fewer students than mock data
+        count = conn.execute("SELECT COUNT(*) FROM students").fetchone()[0]
+        if count == 0 or count < len(MOCK_STUDENTS):
+            # Clear existing data
+            conn.execute("DELETE FROM students")
+            conn.commit()
+            
+            # Load all mock data
+            for student in MOCK_STUDENTS:
+                try:
+                    conn.execute(
+                        """
+                        INSERT INTO students (name, roll_number, marks, department)
+                        VALUES (?, ?, ?, ?)
+                        """,
+                        (
+                            student["name"],
+                            student["roll_number"],
+                            student["marks"],
+                            student["department"],
+                        ),
+                    )
+                except sqlite3.IntegrityError:
+                    # Skip duplicates
+                    pass
+            conn.commit()
 
 
 def validate_student_payload(payload: dict[str, Any]) -> tuple[bool, str]:
